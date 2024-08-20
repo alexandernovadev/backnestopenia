@@ -17,7 +17,7 @@ export const imageToTextUseCase = async (openai: OpenAI, options: Options) => {
   const { imageFile, prompt } = options;
 
   const response = await openai.chat.completions.create({
-    model: 'gpt-4-turbo', //'gpt-4-vision-preview',
+    model: 'gpt-4o-2024-08-06', //'gpt-4-vision-preview',
     max_tokens: 1000,
     messages: [
       {

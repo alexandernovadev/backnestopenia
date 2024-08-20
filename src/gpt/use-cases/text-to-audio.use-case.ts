@@ -12,7 +12,6 @@ export const textToAudioUseCase = async (
   openai: OpenAI,
   { prompt, voice }: Options,
 ) => {
-
   const voices = {
     nova: 'nova',
     alloy: 'alloy',
@@ -30,15 +29,14 @@ export const textToAudioUseCase = async (
   fs.mkdirSync(folderPath, { recursive: true });
 
   const mp3 = await openai.audio.speech.create({
-    model: 'tts-1',
+    model: 'tts-1-hd',
     voice: selectedVoice,
     input: prompt,
     response_format: 'mp3',
   });
 
-  const buffer = Buffer.from( await mp3.arrayBuffer() );
-  fs.writeFileSync( speechFile, buffer );
-
+  const buffer = Buffer.from(await mp3.arrayBuffer());
+  fs.writeFileSync(speechFile, buffer);
 
   return speechFile;
 };

@@ -31,16 +31,29 @@ import {
 export class GptController {
   constructor(private readonly gptService: GptService) {}
 
+  /**
+   * Checks orthography of the given text.
+   * @param orthographyDto - DTO containing the text to check.
+   */
   @Post('orthography-check')
   orthographyCheck(@Body() orthographyDto: OrthographyDto) {
     return this.gptService.orthographyCheck(orthographyDto);
   }
 
+  /**
+   * Discusses pros and cons based on the provided data.
+   * @param prosConsDiscusserDto - DTO containing the data to discuss.
+   */
   @Post('pros-cons-discusser')
   prosConsDicusser(@Body() prosConsDiscusserDto: ProsConsDiscusserDto) {
     return this.gptService.prosConsDicusser(prosConsDiscusserDto);
   }
 
+  /**
+   * Streams the pros and cons discussion.
+   * @param prosConsDiscusserDto - DTO containing the data to discuss.
+   * @param res - The HTTP response object to stream the result.
+   */
   @Post('pros-cons-discusser-stream')
   async prosConsDicusserStream(
     @Body() prosConsDiscusserDto: ProsConsDiscusserDto,
@@ -54,18 +67,26 @@ export class GptController {
 
     for await (const chunk of stream) {
       const piece = chunk.choices[0].delta.content || '';
-      // console.log(piece);
       res.write(piece);
     }
 
     res.end();
   }
 
+  /**
+   * Translates text based on the provided data.
+   * @param translateDto - DTO containing the text to translate.
+   */
   @Post('translate')
   translateText(@Body() translateDto: TranslateDto) {
     return this.gptService.translateText(translateDto);
   }
 
+  /**
+   * Retrieves the audio file generated from the text.
+   * @param res - The HTTP response object to send the file.
+   * @param fileId - The ID of the file to retrieve.
+   */
   @Get('text-to-audio/:fileId')
   async textToAudioGetter(
     @Res() res: Response,
@@ -78,6 +99,11 @@ export class GptController {
     res.sendFile(filePath);
   }
 
+  /**
+   * Converts text to audio and returns the audio file.
+   * @param textToAudioDto - DTO containing the text to convert to audio.
+   * @param res - The HTTP response object to send the file.
+   */
   @Post('text-to-audio')
   async textToAudio(
     @Body() textToAudioDto: TextToAudioDto,
@@ -90,6 +116,11 @@ export class GptController {
     res.sendFile(filePath);
   }
 
+  /**
+   * Converts audio to text.
+   * @param file - The uploaded audio file to convert to text.
+   * @param audioToTextDto - DTO containing additional data for conversion.
+   */
   @Post('audio-to-text')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -121,11 +152,20 @@ export class GptController {
     return this.gptService.audioToText(file, audioToTextDto);
   }
 
+  /**
+   * Generates an image based on the provided data.
+   * @param imageGenerationDto - DTO containing the data to generate the image.
+   */
   @Post('image-generation')
   async imageGeneration(@Body() imageGenerationDto: ImageGenerationDto) {
     return await this.gptService.imageGeneration(imageGenerationDto);
   }
 
+  /**
+   * Retrieves a generated image by filename.
+   * @param res - The HTTP response object to send the image.
+   * @param fileName - The name of the image file to retrieve.
+   */
   @Get('image-generation/:filename')
   async getGenerated(
     @Res() res: Response,
@@ -136,11 +176,20 @@ export class GptController {
     res.sendFile(filePath);
   }
 
+  /**
+   * Generates a variation of an image based on the provided data.
+   * @param imageVariationDto - DTO containing the data to generate the image variation.
+   */
   @Post('image-variation')
   async imageVariation(@Body() imageVariationDto: ImageVariationDto) {
     return await this.gptService.geneateImageVariation(imageVariationDto);
   }
 
+  /**
+   * Extracts text from an uploaded image.
+   * @param file - The uploaded image file to extract text from.
+   * @param prompt - The prompt associated with the image.
+   */
   @Post('extract-text-from-image')
   @UseInterceptors(
     FileInterceptor('file', {
