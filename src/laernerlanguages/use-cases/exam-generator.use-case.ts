@@ -15,7 +15,8 @@ export const examGeneratorUseCase = async (
 ) => {
   const { ammountQuestions, difficulty, grammar, level, topic } = options;
 
-  const completion = await openai.chat.completions.create({
+  return await openai.chat.completions.create({
+    stream: true,
     messages: [
       {
         role: 'system',
@@ -77,8 +78,4 @@ export const examGeneratorUseCase = async (
       type: 'json_object',
     },
   });
-
-  const jsonResp = JSON.parse(completion.choices[0].message.content);
-
-  return jsonResp;
 };
